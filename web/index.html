@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>工地车牌识别</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="logo">车</div>
+    <div>
+      <h1>工地车牌识别</h1>
+      <p class="sub">LWS380 片段 · 车牌 / 时间 / 截图</p>
+    </div>
+  </div>
+  <div class="actions">
+    <button id="btnScan" class="primary">扫描新片段</button>
+  </div>
+</header>
+
+<section class="stats">
+  <div class="card"><span id="stPass">-</span><label>通行次数</label></div>
+  <div class="card"><span id="stPlate">-</span><label>车牌数</label></div>
+  <div class="card"><span id="stClip">-</span><label>片段进度</label></div>
+  <div class="card"><span id="stQueue">-</span><label>排队中</label></div>
+</section>
+
+<section class="filters">
+  <input type="date" id="fDate">
+  <input type="text" id="fPlate" placeholder="车牌搜索，如 AKF273">
+  <button id="btnClear" class="ghost">清空</button>
+  <span id="hint" class="hint"></span>
+</section>
+
+<main id="list" class="list"></main>
+
+<div id="modal" class="modal hidden">
+  <div class="modal-box">
+    <button class="close" id="btnClose">×</button>
+    <div class="modal-head">
+      <h2 id="mPlate">-</h2>
+      <p id="mMeta" class="hint"></p>
+    </div>
+    <div class="modal-body">
+      <div class="pane">
+        <img id="mSnap" alt="车牌截图">
+        <p class="cap">车牌特写</p>
+      </div>
+      <div class="pane">
+        <img id="mFull" alt="整帧">
+        <p class="cap">整帧</p>
+      </div>
+    </div>
+    <video id="mVideo" controls preload="metadata"></video>
+    <p class="cap" id="mVideoCap"></p>
+  </div>
+</div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
