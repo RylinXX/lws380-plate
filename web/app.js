@@ -33,7 +33,7 @@ function render() {
   }
   list.innerHTML = rows.map((r, i) => `
     <div class="row" data-i="${i}">
-      <img src="/${r.snapshot}" loading="lazy" alt="">
+      <img src="/media/${r.snapshot}" loading="lazy" alt="">
       <div>
         <div class="plate">${r.plate}</div>
         <div class="meta">${fmt(r.first_ts)} · 片段 ${r.clip} · 置信度 ${(r.conf * 100).toFixed(0)}%</div>
@@ -48,8 +48,8 @@ function render() {
 function openModal(r) {
   $("#mPlate").textContent = r.plate;
   $("#mMeta").textContent = `${r.first_ts} · ${r.clip} · 偏移 ${r.offset}s · 票数 ${r.votes}`;
-  $("#mSnap").src = "/" + r.snapshot;
-  $("#mFull").src = "/" + r.snapshot.replace(".jpg", "_full.jpg");
+  $("#mSnap").src = "/media/" + r.snapshot;
+  $("#mFull").src = "/media/" + r.snapshot.replace(".jpg", "_full.jpg");
   const v = $("#mVideo");
   v.src = "/video/" + encodeURIComponent(r.clip) + "#t=" + r.offset;
   $("#mVideoCap").textContent = "源片段（从识别时间点开始）";

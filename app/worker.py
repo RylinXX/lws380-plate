@@ -43,7 +43,7 @@ def _run(engine):
             for ev in events:
                 snap = os.path.join(SNAPS, f"{meta['start']}_{int(ev['offset_sec'])}s_{ev['plate']}.jpg")
                 engine.snapshot(path, ev["offset_sec"] * meta["fps"], ev["box"], snap)
-                db.add_event(clip_id, meta["start"], ev, os.path.relpath(snap, ROOT))
+                db.add_event(clip_id, meta["start"], ev, os.path.relpath(snap, DATA))
             db.set_status(clip_id, "done", 1, frames=meta["frames"], fps=meta["fps"])
         except Exception as e:
             db.set_status(clip_id, "error", error=str(e)[:300])
