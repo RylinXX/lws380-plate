@@ -62,6 +62,33 @@ $("#btnClose").onclick = () => {
 };
 $("#modal").onclick = (e) => { if (e.target.id === "modal") $("#btnClose").click(); };
 
+$("#btnUp").onclick = () => $("#fileInput").click();
+$("#fileInput").onchange = () => uploadFiles($("#fileInput").files);
+
+async function uploadFiles(files) {
+  if (!files || !files.length) return;
+  const fd = new FormData();
+  [...files].forEach((f) => fd.append("files", f));
+  $("#hint").textContent = `上传 ${files.length} 个文件…`;
+  try {
+    const r = await fetch("/api/upload", { method: "POST", body: fd });
+    const j = await r.json();
+    $("#hint").textContent = `已上传 ${j.saved.length} 个，加入队列 ${j.queued}`;
+    setTimeout(refresh, 1200);
+  } catch (e) {
+    $("#hint").textContent = "上传失败：" + e.message;
+  }
+}
+
+let dragN = 0;
+document.addEventListener("dragenter", (e) => { e.preventDefault(); dragN++; $("#drop").classList.remove("hidden"); });
+document.addEventListener("dragover", (e) => e.preventDefault());
+document.addEventListener("dragleave", () => { if (--dragN <= 0) $("#drop").classList.add("hidden"); });
+document.addEventListener("drop", (e) => {
+  e.preventDefault(); dragN = 0; $("#drop").classList.add("hidden");
+  uploadFiles(e.dataTransfer.files);
+});
+
 $("#btnScan").onclick = async () => {
   $("#hint").textContent = "已加入队列，处理中…";
   const r = await j("/api/scan", {
