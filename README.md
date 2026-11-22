@@ -10,6 +10,16 @@
 - 输出事件表 + 车牌特写 + 整帧截图，网页里可回看源片段
 - SQLite 存储，断点续跑
 
+## 测试素材
+
+`samples/` 下有 9 段真实片段（25MB，原始码流未转码），可直接用来跑通：
+
+```bash
+cp samples/*.mp4 data/videos/
+```
+
+详见 [samples/README.md](samples/README.md)（含 MD5 校验）。
+
 ## 快速开始
 
 ```bash
