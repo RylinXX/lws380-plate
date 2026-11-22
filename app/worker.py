@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """后台处理队列：扫描目录 -> 识别 -> 入库 -> 截图。"""
-import json, os, queue, threading, time
+import json, os, psutil, queue, threading, time
 
 from . import db
 from .plate import PlateEngine, parse_start
@@ -37,6 +37,8 @@ def _run(engine):
         cfg = load_cfg()
         try:
             db.set_status(clip_id, "running", 0)
+            proc = psutil.Process()
+            t0, c0 = time.perf_counter(), sum(proc.cpu_times()[:2])
             events, meta = engine.process(
                 path, cfg, on_progress=lambda p: db.set_status(clip_id, "running", p))
             db.clear_events(clip_id)
@@ -44,7 +46,9 @@ def _run(engine):
                 snap = os.path.join(SNAPS, f"{meta['start']}_{int(ev['offset_sec'])}s_{ev['plate']}.jpg")
                 engine.snapshot(path, ev["offset_sec"] * meta["fps"], ev["box"], snap)
                 db.add_event(clip_id, meta["start"], ev, os.path.relpath(snap, DATA))
-            db.set_status(clip_id, "done", 1, frames=meta["frames"], fps=meta["fps"])
+            wall = time.perf_counter() - t0
+            cpu = sum(proc.cpu_times()[:2]) - c0
+            db.finish_clip(clip_id, round(wall, 2), round(cpu, 2), meta["frames"], meta["fps"])
         except Exception as e:
             db.set_status(clip_id, "error", error=str(e)[:300])
         finally:

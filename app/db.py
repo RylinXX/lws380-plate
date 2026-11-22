@@ -28,6 +28,11 @@ def init():
         create index if not exists idx_events_ts on events(ts);
         create index if not exists idx_events_plate on events(plate);
         """)
+        for col in ("wall_sec real", "cpu_sec real"):
+            try:
+                c.execute(f"alter table clips add column {col}")
+            except Exception:
+                pass
 
 
 def clip_start_dt(start: str) -> datetime:
@@ -41,6 +46,12 @@ def add_clip(name, start):
     with _lock, conn() as c:
         c.execute("insert or ignore into clips(name,start) values(?,?)", (name, start))
         return c.execute("select id from clips where name=?", (name,)).fetchone()["id"]
+
+
+def finish_clip(clip_id, wall, cpu, frames, fps):
+    with _lock, conn() as c:
+        c.execute("""update clips set status='done', progress=1, wall_sec=?, cpu_sec=?,
+                     frames=?, fps=? where id=?""", (wall, cpu, frames, fps, clip_id))
 
 
 def set_status(clip_id, status, progress=None, error=None, frames=None, fps=None):
