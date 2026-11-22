@@ -11,8 +11,8 @@ VIDEOS = os.path.join(DATA, "videos")
 SNAPS = os.path.join(DATA, "snapshots")
 CONFIG = os.path.join(DATA, "config.json")
 
-DEFAULT_CFG = {"province": "京", "step": 5, "conf": 0.5, "min_votes": 3,
-               "roi": None, "merge_gap": 180}
+DEFAULT_CFG = {"province": "京", "step": 8, "conf": 0.5, "min_votes": 3,
+               "roi": [120, 200, 1600, 720], "merge_gap": 180, "two_stage": False}
 
 _q: "queue.Queue[tuple[int,str,str]]" = queue.Queue()
 _started = False
